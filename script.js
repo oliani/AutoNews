@@ -41,8 +41,15 @@ function listPrint(data) {
         <h5 class="mb-1">${element.title}</h5>
         <small class="text-muted custom-text-white">${formattedDate}</small>
       </div>
-      <p sclass="text-muted custom-text-white">${element.description}</p>
-      <small class="text-muted custom-text-white"><p><a href="${element.link}" style="text-decoration:none; color: rgb(16, 161, 168);" class="custom-text-white">Ler notícia completa</a></p></small>
+      <div class="d-flex w-100 justify-content-between">
+        <p class="text-muted custom-text-white">
+          <img src="${element.img_url}" style="max-width: 100%; border-radius: 10px;" alt="${element.title}">
+          ${element.description}
+        </p>
+      </div>
+      <small class="text-muted custom-text-white">
+        <p><a href="${element.link}" style="text-decoration:none; color: rgb(16, 161, 168);" class="custom-text-white">Ler notícia completa</a></p>
+      </small>
     `;
     document.querySelector("#newsList").appendChild(linkElement);
   });
@@ -195,7 +202,9 @@ function getContent() {
   fetchURL(APIUrl)
     .then((data) => {
       if (!data) {
-        document.querySelector('#newsList').innerHTML = `<h2 class="center">Manutenção <h2> <br><h3 class="center"> Tente novamente mais tarde</h3>`;
+        document.querySelector(
+          "#newsList"
+        ).innerHTML = `<h2 class="center">Manutenção <h2> <br><h3 class="center"> Tente novamente mais tarde</h3>`;
       } else {
         newsData = data;
         listPrint(newsData);
