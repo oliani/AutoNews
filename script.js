@@ -42,7 +42,7 @@ function listPrint(data) {
         <small class="text-muted custom-text-white">${formattedDate}</small>
       </div>
       <p sclass="text-muted custom-text-white">${element.description}</p>
-      <small class="text-muted custom-text-white">Fonte: <a href="${element.link}" class="custom-text-white">${element.link}</a></small>
+      <small class="text-muted custom-text-white"><p><a href="${element.link}" style="text-decoration:none; color: rgb(16, 161, 168);" class="custom-text-white">Ler notícia completa</a></p></small>
     `;
     document.querySelector("#newsList").appendChild(linkElement);
   });
