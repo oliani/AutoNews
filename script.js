@@ -59,9 +59,7 @@ function showContent(index) {
   console.log("Clicou no link com índice:", index);
   const publicationDate = newsData[index].pub_date;
   console.log("Data de publicação:", formatDate(publicationDate));
-  let imgURL = newsData[index].description.split(`"`);
-  console.log(imgURL[1]);
-  draw(imgURL[1], newsData[index].title);
+  draw(newsData[index].img_url, newsData[index].title);
 }
 
 function formatDate(date) {
