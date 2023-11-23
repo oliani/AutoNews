@@ -43,7 +43,7 @@ function listPrint(data) {
       </div>
       <div class="d-flex w-100 justify-content-between">
         <p class="text-muted custom-text-white">
-          <img src="${element.img_url}" style="max-width: 100%; border-radius: 10px;" alt="${element.title}">
+          <img src="${element.img_url}" style="width: 100%; height: auto; border-radius: 10px; object-fit: cover;" alt="${element.title}">
           ${element.description}
         </p>
       </div>
@@ -54,6 +54,8 @@ function listPrint(data) {
     document.querySelector("#newsList").appendChild(linkElement);
   });
 }
+
+
 
 function showContent(index) {
   console.log("Clicou no link com índice:", index);
