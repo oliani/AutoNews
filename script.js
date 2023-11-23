@@ -1,6 +1,6 @@
 const APIUrl = "https://rss-back.vercel.app/api/feed";
-//const APIUrl = "http://127.0.0.1:3000/api/feed";
 let newsData;
+let copyTextContent = "";
 
 function fetchURL(theURL) {
   return fetch(theURL)
@@ -81,6 +81,27 @@ function showContent(index) {
   const publicationDate = newsData[index].pub_date;
   console.log("Data de publicação:", formatDate(publicationDate));
   draw(newsData[index].img_url, newsData[index].title);
+
+  // Exibe o botão "Copiar texto" ao lado do botão "Fazer Download"
+  showCopyTextButton();
+  
+  // Atualiza a variável global com o texto a ser copiado
+  copyTextContent = `${newsData[index].title}\n\n${newsData[index].description}`;
+
+  // Remova a exibição do botão "Copiar texto" para notícias anteriores
+  const copyTextBtns = document.querySelectorAll('.copy-text-btn');
+  copyTextBtns.forEach(btn => btn.style.display = 'none');
+  
+  // Cria um novo botão "Copiar texto" para a notícia atual
+  const linkElement = document.querySelectorAll('.custom-list-item')[index];
+  const copyTextBtn = document.createElement('button');
+  copyTextBtn.textContent = 'Copiar texto';
+  copyTextBtn.className = 'copy-text-btn btn btn-secondary'; // Adicione as classes do Bootstrap necessárias
+  copyTextBtn.onclick = () => copyText();
+  
+  // Insere o botão "Copiar texto" ao lado do botão "Fazer Download"
+  const buttonContainer = linkElement.querySelector('.button-container');
+  buttonContainer.appendChild(copyTextBtn);
 }
 
 function formatDate(date) {
@@ -91,7 +112,7 @@ function formatDate(date) {
     hour: "numeric",
     minute: "numeric",
     second: "numeric",
-    timeZone: "UTC", // Ajuste conforme necessário
+    timeZone: "UTC",
   };
 
   return new Intl.DateTimeFormat("pt-BR", options).format(new Date(date));
@@ -104,14 +125,13 @@ function draw(imgURL, title) {
   const downloadBtn = document.getElementById("download-btn");
   let img = new Image();
 
-  img.crossOrigin = "anonymous"; // Para resolver problemas de CORS
+  img.crossOrigin = "anonymous";
   img.addEventListener("load", () => {
     canvas.width = 1080;
     canvas.height = 1080;
 
     drawImageOnCanvas(img, title, canvas, ctx);
 
-    // Adiciona o preview da imagem
     canvasContainer.style.display = "block";
     downloadBtn.style.display = "block";
   });
@@ -119,28 +139,22 @@ function draw(imgURL, title) {
   img.src = imgURL;
 
   function drawImageOnCanvas(img, title, canvas, ctx) {
-    // Calcula as dimensões para preencher o canvas mantendo a proporção
     const aspectRatio = img.width / img.height;
     let newWidth, newHeight;
 
-    // Calcula o fator de escala para preencher completamente o canvas
     const scaleToFit = Math.max(
       canvas.width / img.width,
       canvas.height / img.height
     );
 
-    // Calcula as novas dimensões
     newWidth = img.width * scaleToFit;
     newHeight = img.height * scaleToFit;
 
-    // Calcula as posições para centralizar a imagem no canvas
     const drawX = (canvas.width - newWidth) / 2;
     const drawY = (canvas.height - newHeight) / 2;
 
-    // Desenha a imagem de fundo
     ctx.drawImage(img, drawX, drawY, newWidth, newHeight);
 
-    // Adiciona o degradê
     const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
     gradient.addColorStop(0, "transparent");
     gradient.addColorStop(1, "black");
@@ -148,41 +162,33 @@ function draw(imgURL, title) {
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Adiciona o título próximo ao limite inferior da imagem
     ctx.textAlign = "center";
     ctx.textBaseline = "bottom";
 
     let fontSize = 60;
     const maxTextWidth = canvas.width - 20;
 
-    // Quebra o título em linhas para garantir a visibilidade total
     const lines = breakTextIntoLines(
       title.toUpperCase(),
       `${fontSize}px 'Anton', sans-serif`,
       maxTextWidth
     );
 
-    // Calcula a altura total ocupada pelo texto
     const totalTextHeight = lines.length * fontSize;
 
-    // Ajusta a posição inicial para ficar próximo ao limite inferior da imagem
-    let titleY = canvas.height - 20 - totalTextHeight; // Ajuste conforme necessário
+    let titleY = canvas.height - 20 - totalTextHeight;
 
-    // Desenha cada linha do texto com uma borda preta
     ctx.lineWidth = 2;
     ctx.strokeStyle = "black";
     ctx.fillStyle = "white";
 
     lines.forEach((line) => {
-      titleY += fontSize; // Desce uma linha
-      // Desenha a borda preta
+      titleY += fontSize;
       ctx.strokeText(line, canvas.width / 2, titleY);
-      // Desenha o texto branco
       ctx.fillText(line, canvas.width / 2, titleY);
     });
   }
 
-  // Função auxiliar para quebrar o texto em linhas
   function breakTextIntoLines(text, font, maxWidth) {
     ctx.font = font;
     const words = text.split(" ");
@@ -210,11 +216,24 @@ function downloadImage() {
   const canvas = document.getElementById("canvas");
   const dataURL = canvas.toDataURL("image/jpeg");
 
-  // Cria um link para fazer o download da imagem
   const link = document.createElement("a");
   link.href = dataURL;
   link.download = "AutoNews_Image.jpg";
   link.click();
+}
+
+function copyText() {
+  if (copyTextContent) {
+    const textarea = document.createElement('textarea');
+    textarea.value = copyTextContent;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+    alert('Texto copiado para a área de transferência!');
+  } else {
+    alert('Nenhuma notícia selecionada para copiar o texto.');
+  }
 }
 
 function getContent() {
@@ -232,6 +251,11 @@ function getContent() {
     .catch((error) => {
       console.error("Erro ao chamar fetchURL:", error);
     });
+}
+
+function showCopyTextButton() {
+  const copyTextBtn = document.getElementById('copy-text-btn');
+  copyTextBtn.style.display = 'inline-block';
 }
 
 getContent();

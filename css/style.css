@@ -39,7 +39,7 @@ custom-text-white {
   border-color: #343a40; /* Cor da borda escura para destacar o texto branco */
 }
 
-div{
+div {
   color: rgb(16, 161, 168);
 }
 
@@ -166,3 +166,28 @@ h1 {
 #clear-btn:hover {
   background-color: #5a6268;
 }
+
+#download-btn,
+#copy-text-btn {
+  display: none;
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+#download-btn:hover,
+#copy-text-btn:hover {
+  background-color: #0056b3;
+}
+
+/* Adicione esta regra ao seu arquivo CSS */
+#copy-text-btn {
+  display: none;
+}
+
+

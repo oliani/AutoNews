@@ -33,9 +33,12 @@
     </div>
     <div id="canvas-container" class="center">
       <canvas id="canvas" width="800" height="800"></canvas>
-      <button id="download-btn" onclick="downloadImage()">
-        Download Image
-      </button>
+      <div class="button-container">
+        <div class="btn-group" idrole="group" aria-label="Basic example">
+          <button type="button" id="download-btn" onclick="downloadImage()" class="btn btn-secondary">Baixar Imagem</button>
+          <button type="button" id="copy-text-btn" onclick="copyText()" class="btn btn-secondary">Copiar Texto</button>
+        </div>
+      </div>
     </div>
     <div class="list-group center" id="newsList"></div>
   </body>
