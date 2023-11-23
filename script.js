@@ -1,4 +1,5 @@
 const APIUrl = "https://rss-back.vercel.app/api/feed";
+//const APIUrl = "http://127.0.0.1:3000/api/feed";
 let newsData;
 
 function fetchURL(theURL) {
@@ -55,7 +56,25 @@ function listPrint(data) {
   });
 }
 
+function searchNews() {
+  const searchTerm = document.getElementById("search-input").value.toLowerCase();
 
+  const filteredNews = newsData.filter((news) => {
+    return (
+      news.title.toLowerCase().includes(searchTerm) ||
+      news.description.toLowerCase().includes(searchTerm)
+    );
+  });
+
+  document.querySelector("#newsList").innerHTML = "";
+  listPrint(filteredNews);
+}
+
+function clearSearch() {
+  document.getElementById("search-input").value = "";
+  document.querySelector("#newsList").innerHTML = "";
+  listPrint(newsData);
+}
 
 function showContent(index) {
   console.log("Clicou no link com índice:", index);
