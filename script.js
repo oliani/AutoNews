@@ -77,6 +77,12 @@ function clearSearch() {
 }
 
 function showContent(index) {
+  // Verifica se o índice é válido
+  if (index < 0 || index >= newsData.length) {
+    console.error("Índice inválido:", index);
+    return;
+  }
+
   console.log("Clicou no link com índice:", index);
   const publicationDate = newsData[index].pub_date;
   console.log("Data de publicação:", formatDate(publicationDate));
@@ -84,23 +90,36 @@ function showContent(index) {
 
   // Exibe o botão "Copiar texto" ao lado do botão "Fazer Download"
   showCopyTextButton();
-  
+
   // Atualiza a variável global com o texto a ser copiado
   copyTextContent = `${newsData[index].title}\n\n${newsData[index].description}`;
 
-  // Remova a exibição do botão "Copiar texto" para notícias anteriores
+  // Remove a exibição do botão "Copiar texto" para notícias anteriores
   const copyTextBtns = document.querySelectorAll('.copy-text-btn');
   copyTextBtns.forEach(btn => btn.style.display = 'none');
-  
+
+  // Encontrar o elemento .custom-list-item correspondente ao índice
+  const linkElements = document.querySelectorAll('.custom-list-item');
+  if (index < 0 || index >= linkElements.length) {
+    console.error("Índice inválido para elementos .custom-list-item:", index);
+    return;
+  }
+
+  const linkElement = linkElements[index];
+
+  // Verifica se o elemento tem a classe .button-container
+  const buttonContainer = linkElement.querySelector('.button-container');
+  if (!buttonContainer) {
+    return;
+  }
+
   // Cria um novo botão "Copiar texto" para a notícia atual
-  const linkElement = document.querySelectorAll('.custom-list-item')[index];
   const copyTextBtn = document.createElement('button');
   copyTextBtn.textContent = 'Copiar texto';
   copyTextBtn.className = 'copy-text-btn btn btn-secondary'; // Adicione as classes do Bootstrap necessárias
   copyTextBtn.onclick = () => copyText();
-  
+
   // Insere o botão "Copiar texto" ao lado do botão "Fazer Download"
-  const buttonContainer = linkElement.querySelector('.button-container');
   buttonContainer.appendChild(copyTextBtn);
 }
 
