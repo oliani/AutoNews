@@ -33,11 +33,32 @@
     </div>
     <div id="canvas-container" class="center">
       <canvas id="canvas" width="800" height="800"></canvas>
-      <div class="button-container">
-        <div class="btn-group" idrole="group" aria-label="Basic example">
-          <button type="button" id="download-btn" onclick="downloadImage()" class="btn btn-info">Baixar Imagem</button>
-          <button type="button" id="copy-text-btn" onclick="copyText()" class="btn btn-secondary" style="margin-left: 5px;">Copiar Texto</button>
-          <button type="button" id="copy-text-btn" onclick="" class="btn btn-secondary" style="margin-left: 5px;">Processar texto</button>
+      <div class="button-container" style="margin-top: 5px;">
+        <div class="btn-group" role="group" aria-label="Basic example">
+          <button
+            type="button"
+            id="download-btn"
+            onclick="downloadImage()"
+            class="btn btn-info"
+          >
+            Baixar Imagem
+          </button>
+          <button
+            type="button"
+            id="copy-text-btn"
+            onclick="copyText()"
+            class="btn btn-info"
+          >
+            Copiar Texto
+          </button>
+          <button
+            type="button"
+            id="show-info-btn"
+            onclick="showItemInfo()"
+            class="btn btn-info"
+          >
+            Processar Texto
+          </button>
         </div>
       </div>
     </div>

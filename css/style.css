@@ -79,22 +79,6 @@ h1 {
   width: 100%;
 }
 
-#download-btn {
-  display: none;
-  margin-top: 10px;
-  padding: 10px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  cursor: pointer;
-  border-radius: 5px;
-  transition: background-color 0.3s ease;
-}
-
-#download-btn:hover {
-  background-color: #0056b3;
-}
-
 .list-group {
   max-width: 800px;
   width: 100%;
@@ -166,28 +150,4 @@ h1 {
 #clear-btn:hover {
   background-color: #5a6268;
 }
-
-#download-btn,
-#copy-text-btn {
-  display: none;
-  margin-top: 10px;
-  padding: 10px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  cursor: pointer;
-  border-radius: 5px;
-  transition: background-color 0.3s ease;
-}
-
-#download-btn:hover,
-#copy-text-btn:hover {
-  background-color: #0056b3;
-}
-
-/* Adicione esta regra ao seu arquivo CSS */
-#copy-text-btn {
-  display: none;
-}
-
 
