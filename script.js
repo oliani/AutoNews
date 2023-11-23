@@ -1,4 +1,7 @@
 const APIUrl = "https://rss-back.vercel.app/api/feed";
+//const APIUrl = "http://localhost:3000/api/feed";
+//const processTextUrl = "localhost:3000/api/proecess-text";
+
 let newsData;
 let copyTextContent = "";
 
@@ -77,7 +80,6 @@ function clearSearch() {
 }
 
 function showContent(index) {
-  // Verifica se o índice é válido
   if (index < 0 || index >= newsData.length) {
     console.error("Índice inválido:", index);
     return;
@@ -88,17 +90,13 @@ function showContent(index) {
   console.log("Data de publicação:", formatDate(publicationDate));
   draw(newsData[index].img_url, newsData[index].title);
 
-  // Exibe o botão "Copiar texto" ao lado do botão "Fazer Download"
   showCopyTextButton();
 
-  // Atualiza a variável global com o texto a ser copiado
   copyTextContent = `${newsData[index].title}\n\n${newsData[index].description}`;
 
-  // Remove a exibição do botão "Copiar texto" para notícias anteriores
   const copyTextBtns = document.querySelectorAll('.copy-text-btn');
   copyTextBtns.forEach(btn => btn.style.display = 'none');
 
-  // Encontrar o elemento .custom-list-item correspondente ao índice
   const linkElements = document.querySelectorAll('.custom-list-item');
   if (index < 0 || index >= linkElements.length) {
     console.error("Índice inválido para elementos .custom-list-item:", index);
@@ -107,20 +105,51 @@ function showContent(index) {
 
   const linkElement = linkElements[index];
 
-  // Verifica se o elemento tem a classe .button-container
   const buttonContainer = linkElement.querySelector('.button-container');
   if (!buttonContainer) {
     return;
   }
 
-  // Cria um novo botão "Copiar texto" para a notícia atual
   const copyTextBtn = document.createElement('button');
   copyTextBtn.textContent = 'Copiar texto';
-  copyTextBtn.className = 'copy-text-btn btn btn-secondary'; // Adicione as classes do Bootstrap necessárias
+  copyTextBtn.className = 'copy-text-btn btn btn-secondary';
   copyTextBtn.onclick = () => copyText();
 
-  // Insere o botão "Copiar texto" ao lado do botão "Fazer Download"
   buttonContainer.appendChild(copyTextBtn);
+
+  const processTextBtn = document.createElement('button');
+  processTextBtn.textContent = 'Processar texto';
+  processTextBtn.className = 'process-text-btn btn btn-secondary';
+  processTextBtn.onclick = () => processText(index);
+
+  buttonContainer.appendChild(processTextBtn);
+}
+
+function processText(index) {
+  if (index < 0 || index >= newsData.length) {
+    console.error("Índice inválido:", index);
+    return;
+  }
+
+  const textToProcess = `${newsData[index].title}\n\n${newsData[index].description}`;
+
+  fetch(processTextUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ text: textToProcess }),
+  })
+    .then(response => response.json())
+    .then(data => {
+      console.log('Resposta da API de processamento de texto:', data);
+
+      alert('Texto processado com sucesso!');
+    })
+    .catch(error => {
+      console.error('Erro ao processar texto:', error);
+      alert('Erro ao processar texto. Tente novamente.');
+    });
 }
 
 function formatDate(date) {
