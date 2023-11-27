@@ -1,6 +1,7 @@
 const APIUrl = "https://rss-back.vercel.app/api/feed";
 let newsData;
 let copyTextContent = "";
+let currentSelected = -1;
 
 function fetchURL(theURL) {
   return fetch(theURL)
@@ -32,7 +33,8 @@ function listPrint(data) {
     linkElement.href = "#";
     linkElement.className =
       "list-group-item list-group-item-action flex-column align-items-start custom-list-item";
-    linkElement.addEventListener("click", () => showContent(index));
+    //linkElement.addEventListener("click", () => showContent(index));
+    linkElement.addEventListener("click", () => showContent(index, data));
 
     const publicationDate = new Date(element.pub_date);
     const formattedDate = formatDate(publicationDate);
@@ -76,29 +78,30 @@ function clearSearch() {
   listPrint(newsData);
 }
 
-function showContent(index) {
+function showContent(index, data) {
   console.log("Clicou no link com índice:", index);
-  const publicationDate = newsData[index].pub_date;
+  currentSelected = index;
+  const publicationDate = data[index].pub_date;
   console.log("Data de publicação:", formatDate(publicationDate));
-  draw(newsData[index].img_url, newsData[index].title);
+  draw(data[index].img_url, data[index].title);
 
   // Exibe o botão "Copiar texto" ao lado do botão "Fazer Download"
   showCopyTextButton();
-  
+
   // Atualiza a variável global com o texto a ser copiado
-  copyTextContent = `${newsData[index].title}\n\n${newsData[index].description}`;
+  copyTextContent = `${data[index].title}\n\n${data[index].description}`;
 
   // Remova a exibição do botão "Copiar texto" para notícias anteriores
   const copyTextBtns = document.querySelectorAll('.copy-text-btn');
   copyTextBtns.forEach(btn => btn.style.display = 'none');
-  
+
   // Cria um novo botão "Copiar texto" para a notícia atual
   const linkElement = document.querySelectorAll('.custom-list-item')[index];
   const copyTextBtn = document.createElement('button');
   copyTextBtn.textContent = 'Copiar texto';
   copyTextBtn.className = 'copy-text-btn btn btn-secondary'; // Adicione as classes do Bootstrap necessárias
   copyTextBtn.onclick = () => copyText();
-  
+
   // Insere o botão "Copiar texto" ao lado do botão "Fazer Download"
   const buttonContainer = linkElement.querySelector('.button-container');
   buttonContainer.appendChild(copyTextBtn);
@@ -256,6 +259,47 @@ function getContent() {
 function showCopyTextButton() {
   const copyTextBtn = document.getElementById('copy-text-btn');
   copyTextBtn.style.display = 'inline-block';
+}
+
+async function processText() {
+  if (currentSelected === -1) {
+    alert('Nenhuma notícia selecionada para processar o texto.');
+    return;
+  }
+
+  const title = newsData[currentSelected].title;
+  const description = newsData[currentSelected].description;
+
+  const requestOptions = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ text: `${title}\n\n${description}` }),
+  };
+
+  try {
+    const response = await fetch('http://localhost:3000/api/summarize-text', requestOptions);
+    const data = await response.json();
+
+    if (data && data.options && data.options.length > 0) {
+      // Exibir opções para o usuário escolher
+      const options = data.options.join('\n');
+      const userChoice = prompt(`Escolha uma opção para o resumo:\n${options}`);
+      
+      if (userChoice && data.options.includes(userChoice)) {
+        // Aqui você pode usar o resumo escolhido, por exemplo:
+        alert(`Texto processado:\n${userChoice}`);
+      } else {
+        alert('Escolha inválida ou cancelada.');
+      }
+    } else {
+      alert('Não foi possível obter opções de resumo.');
+    }
+  } catch (error) {
+    console.error('Erro ao processar o texto:', error);
+    alert('Erro ao processar o texto. Tente novamente mais tarde.');
+  }
 }
 
 getContent();
