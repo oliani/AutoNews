@@ -1,4 +1,4 @@
-const APIUrl = "https://rss-back.vercel.app/api/feed";
+const APIUrl = "newsData.json"; // Alterado para o arquivo local
 let newsData;
 let copyTextContent = "";
 let currentSelected = -1;
@@ -9,11 +9,7 @@ function fetchURL(theURL) {
       if (!response.ok) {
         throw new Error("Erro na requisição");
       }
-      return response.text();
-    })
-    .then((data) => {
-      console.log("Conteúdo da resposta:", data);
-      return JSON.parse(data);
+      return response.json(); // Alterado para retornar JSON diretamente
     })
     .then((parsedData) => {
       console.log("Fetch bem sucedido!", parsedData);
@@ -33,7 +29,6 @@ function listPrint(data) {
     linkElement.href = "#";
     linkElement.className =
       "list-group-item list-group-item-action flex-column align-items-start custom-list-item";
-    //linkElement.addEventListener("click", () => showContent(index));
     linkElement.addEventListener("click", () => showContent(index, data));
 
     const publicationDate = new Date(element.pub_date);
