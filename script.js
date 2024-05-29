@@ -122,20 +122,35 @@ function draw(imgURL, title) {
   const canvas = document.getElementById("canvas");
   const ctx = canvas.getContext("2d");
   const downloadBtn = document.getElementById("download-btn");
-  let img = new Image();
 
-  img.crossOrigin = "anonymous";
-  img.addEventListener("load", () => {
-    canvas.width = 1080;
-    canvas.height = 1080;
+  convertImageToBase64(imgURL, function(base64Img) {
+    let img = new Image();
+    img.src = base64Img;
 
-    drawImageOnCanvas(img, title, canvas, ctx);
+    img.addEventListener("load", () => {
+      canvas.width = 1080;
+      canvas.height = 1080;
 
-    canvasContainer.style.display = "block";
-    downloadBtn.style.display = "block";
+      drawImageOnCanvas(img, title, canvas, ctx);
+
+      canvasContainer.style.display = "block";
+      downloadBtn.style.display = "block";
+    });
   });
 
-  img.src = imgURL;
+  function convertImageToBase64(url, callback) {
+    let xhr = new XMLHttpRequest();
+    xhr.onload = function() {
+      let reader = new FileReader();
+      reader.onloadend = function() {
+        callback(reader.result);
+      };
+      reader.readAsDataURL(xhr.response);
+    };
+    xhr.open("GET", url);
+    xhr.responseType = "blob";
+    xhr.send();
+  }
 
   function drawImageOnCanvas(img, title, canvas, ctx) {
     const aspectRatio = img.width / img.height;
