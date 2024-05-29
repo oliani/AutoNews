@@ -41,7 +41,7 @@ function listPrint(data) {
       </div>
       <div class="d-flex w-100 justify-content-between">
         <p class="text-muted custom-text-white">
-          <img src="${element.img_url + "?not-from-cache-please"}" style="width: 100%; height: auto; border-radius: 10px; object-fit: cover;" alt="${element.title}">
+          <img src="${element.img_url}" style="width: 100%; height: auto; border-radius: 10px; object-fit: cover;" alt="${element.title}">
           ${element.description}
         </p>
       </div>
