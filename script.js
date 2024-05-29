@@ -20,7 +20,7 @@ async function fetchURL(theURL) {
 
 async function fetchImageAsBase64(url) {
   try {
-    const response = await fetch(url);
+    const response = await fetch(`https://cors-anywhere.herokuapp.com/${url}`, { mode: 'cors' });
     if (!response.ok) {
       throw new Error("Erro ao carregar imagem");
     }
