@@ -116,7 +116,8 @@ function formatDate(date) {
   return new Intl.DateTimeFormat("pt-BR", options).format(new Date(date));
 }
 
-function draw(imgURL + "?not-from-cache-please", title) {
+function draw(imgURL, title) {
+  imgURL += "?not-from-cache-please";
   const canvasContainer = document.getElementById("canvas-container");
   const canvas = document.getElementById("canvas");
   const ctx = canvas.getContext("2d");
