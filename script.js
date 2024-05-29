@@ -3,49 +3,28 @@ let newsData;
 let copyTextContent = "";
 let currentSelected = -1;
 
-async function fetchURL(theURL) {
-  try {
-    const response = await fetch(theURL);
-    if (!response.ok) {
-      throw new Error("Erro na requisição");
-    }
-    const parsedData = await response.json();
-    console.log("Fetch bem sucedido!", parsedData);
-    return parsedData;
-  } catch (error) {
-    console.error("Erro: ", error);
-    return null;
-  }
+function fetchURL(theURL) {
+  return fetch(theURL)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Erro na requisição");
+      }
+      return response.json(); // Alterado para retornar JSON diretamente
+    })
+    .then((parsedData) => {
+      console.log("Fetch bem sucedido!", parsedData);
+      return parsedData;
+    })
+    .catch((error) => {
+      console.error("Erro: ", error);
+      return null;
+    });
 }
 
-async function fetchImageAsBase64(url) {
-  try {
-    const response = await fetch(`https://cors-anywhere.herokuapp.com/${url}`, { mode: 'cors' });
-    if (!response.ok) {
-      throw new Error("Erro ao carregar imagem");
-    }
-    const blob = await response.blob();
-    return await convertBlobToBase64(blob);
-  } catch (error) {
-    console.error("Erro ao converter imagem para Base64:", error);
-    return null;
-  }
-}
-
-function convertBlobToBase64(blob) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onloadend = () => resolve(reader.result);
-    reader.onerror = reject;
-    reader.readAsDataURL(blob);
-  });
-}
-
-async function listPrint(data) {
+function listPrint(data) {
   const now = new Date();
 
-  for (let index = 0; index < data.length; index++) {
-    const element = data[index];
+  data.forEach((element, index) => {
     const linkElement = document.createElement("a");
     linkElement.href = "#";
     linkElement.className =
@@ -55,8 +34,6 @@ async function listPrint(data) {
     const publicationDate = new Date(element.pub_date);
     const formattedDate = formatDate(publicationDate);
 
-    const base64Image = await fetchImageAsBase64(element.img_url + "?not-from-cache-please");
-
     linkElement.innerHTML = `
       <div class="d-flex w-100 justify-content-between">
         <h5 class="mb-1">${element.title}</h5>
@@ -64,7 +41,7 @@ async function listPrint(data) {
       </div>
       <div class="d-flex w-100 justify-content-between">
         <p class="text-muted custom-text-white">
-          <img src="${base64Image}" style="width: 100%; height: auto; border-radius: 10px; object-fit: cover;" alt="${element.title}">
+          <img src="${element.img_url + "?not-from-cache-please"}" style="width: 100%; height: auto; border-radius: 10px; object-fit: cover;" alt="${element.title}">
           ${element.description}
         </p>
       </div>
@@ -73,7 +50,7 @@ async function listPrint(data) {
       </small>
     `;
     document.querySelector("#newsList").appendChild(linkElement);
-  }
+  });
 }
 
 function searchNews() {
@@ -257,20 +234,21 @@ function copyText() {
   }
 }
 
-async function getContent() {
-  try {
-    const data = await fetchURL(APIUrl);
-    if (!data) {
-      document.querySelector(
-        "#newsList"
-      ).innerHTML = `<h2 class="center">Manutenção <h2> <br><h3 class="center"> Tente novamente mais tarde</h3>`;
-    } else {
-      newsData = data;
-      await listPrint(newsData);
-    }
-  } catch (error) {
-    console.error("Erro ao chamar fetchURL:", error);
-  }
+function getContent() {
+  fetchURL(APIUrl)
+    .then((data) => {
+      if (!data) {
+        document.querySelector(
+          "#newsList"
+        ).innerHTML = `<h2 class="center">Manutenção <h2> <br><h3 class="center"> Tente novamente mais tarde</h3>`;
+      } else {
+        newsData = data;
+        listPrint(newsData);
+      }
+    })
+    .catch((error) => {
+      console.error("Erro ao chamar fetchURL:", error);
+    });
 }
 
 function showCopyTextButton() {
