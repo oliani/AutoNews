@@ -218,8 +218,19 @@ function downloadImage() {
   const link = document.createElement("a");
   link.href = dataURL;
   link.download = "AutoNews_Image.jpg";
-  link.click();
+
+  // Verifica se é iOS
+  if (navigator.userAgent.match(/(iPad|iPhone|iPod)/i)) {
+    // Cria um novo link com o valor data URL
+    const newWindow = window.open();
+    newWindow.document.write('<img src="' + dataURL + '" alt="AutoNews Image"/>');
+    newWindow.document.close();
+  } else {
+    // Para outros navegadores, simplesmente clica no link para iniciar o download
+    link.click();
+  }
 }
+
 
 function copyText() {
   if (copyTextContent) {
