@@ -3,6 +3,19 @@ let newsData;
 let copyTextContent = "";
 let currentSelected = -1;
 
+document.addEventListener("DOMContentLoaded", () => {
+  // Adiciona um evento de tecla ao campo de busca
+  document.getElementById("search-input").addEventListener("keydown", function(event) {
+    if (event.key === "Enter") {
+      event.preventDefault(); // Previne o comportamento padrão de submissão de formulário
+      searchNews(); // Chama a função de busca
+    }
+  });
+
+  // Carrega o conteúdo quando a página é carregada
+  getContent();
+});
+
 function fetchURL(theURL) {
   return fetch(theURL)
     .then((response) => {
@@ -101,7 +114,6 @@ function showContent(index, data) {
   const buttonContainer = linkElement.querySelector('.button-container');
   buttonContainer.appendChild(copyTextBtn);
 }
-
 
 function formatDate(date) {
   const options = {
@@ -247,7 +259,6 @@ function downloadImage() {
   }
 }
 
-
 function copyText() {
   if (copyTextContent) {
     const textarea = document.createElement('textarea');
@@ -283,46 +294,3 @@ function showCopyTextButton() {
   const copyTextBtn = document.getElementById('copy-text-btn');
   copyTextBtn.style.display = 'inline-block';
 }
-
-async function processText() {
-  if (currentSelected === -1) {
-    alert('Nenhuma notícia selecionada para processar o texto.');
-    return;
-  }
-
-  const title = newsData[currentSelected].title;
-  const description = newsData[currentSelected].description;
-
-  const requestOptions = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ text: `${title}\n\n${description}` }),
-  };
-
-  try {
-    const response = await fetch('http://localhost:3000/api/summarize-text', requestOptions);
-    const data = await response.json();
-
-    if (data && data.options && data.options.length > 0) {
-      // Exibir opções para o usuário escolher
-      const options = data.options.join('\n');
-      const userChoice = prompt(`Escolha uma opção para o resumo:\n${options}`);
-      
-      if (userChoice && data.options.includes(userChoice)) {
-        // Aqui você pode usar o resumo escolhido, por exemplo:
-        alert(`Texto processado:\n${userChoice}`);
-      } else {
-        alert('Escolha inválida ou cancelada.');
-      }
-    } else {
-      alert('Não foi possível obter opções de resumo.');
-    }
-  } catch (error) {
-    console.error('Erro ao processar o texto:', error);
-    alert('Erro ao processar o texto. Tente novamente mais tarde.');
-  }
-}
-
-getContent();
