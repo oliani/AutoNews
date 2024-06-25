@@ -31,7 +31,7 @@ body {
   margin-bottom: 20px;
 }
 
-custom-text-white {
+.custom-text-white {
   color: white !important;
 }
 
@@ -156,19 +156,20 @@ h1 {
 
 /* Media queries para telas menores */
 @media (max-width: 768px) {
-  #search-input {
-    width: 100%;
+  #search-bar {
+    flex-direction: column;
+    align-items: center; /* Garante que os itens fiquem centralizados */
+  }
+
+  #search-input,
+  #search-btn,
+  #clear-btn {
+    width: 80%; /* Ajusta a largura para 80% da tela */
     margin-bottom: 10px;
   }
 
   #search-btn,
   #clear-btn {
-    width: 100%;
-    margin-bottom: 10px;
-  }
-
-  #search-bar {
-    flex-direction: column;
-    align-items: stretch;
+    margin-left: 0; /* Remove a margem esquerda quando em coluna */
   }
 }
