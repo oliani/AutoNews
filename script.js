@@ -102,6 +102,7 @@ function showContent(index, data) {
   buttonContainer.appendChild(copyTextBtn);
 }
 
+
 function formatDate(date) {
   const options = {
     year: "numeric",
